@@ -19,8 +19,8 @@ WORKDIR /app
 # Install uv package manager
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Copy backend dependencies definition
-COPY backend/pyproject.toml backend/uv.lock ./backend/
+# Copy backend dependencies definition including README.md for packaging metadata
+COPY backend/pyproject.toml backend/uv.lock backend/README.md ./backend/
 WORKDIR /app/backend
 
 # Sync dependencies (including lock file check)
@@ -28,6 +28,9 @@ RUN uv sync --frozen --no-dev --no-install-project
 
 # Copy backend app source code
 COPY backend/app/ ./app/
+
+# Build and install the project itself into the virtual environment
+RUN uv sync --frozen --no-dev
 
 # Copy compiled frontend static assets from Stage 1 into the backend static folder
 COPY --from=frontend-builder /build/out/ ./static/
