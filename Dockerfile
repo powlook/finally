@@ -24,7 +24,7 @@ COPY backend/pyproject.toml backend/uv.lock ./backend/
 WORKDIR /app/backend
 
 # Sync dependencies (including lock file check)
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-dev --no-install-project
 
 # Copy backend app source code
 COPY backend/app/ ./app/
